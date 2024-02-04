@@ -1,22 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: damateos <damateos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/04 12:03:11 by damateos          #+#    #+#             */
-/*   Updated: 2024/02/04 18:09:36 by damateos         ###   ########.fr       */
+/*   Created: 2024/02/04 15:30:42 by damateos          #+#    #+#             */
+/*   Updated: 2024/02/04 15:54:58 by damateos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "get_next_line.h"
+#include <fcntl.h>
+#include <stdio.h>
 
-# include <stdlib.h>
-# include <unistd.h>
+int	main(void)
+{
+	char	*s;
+	int		fd;
 
-char	*get_next_line(int fd);
-int		read_chunk(char **buff, size_t len, size_t buff_size, int fd);
-
-#endif
+	fd = open("./testinput", O_RDONLY);
+	if (fd == -1)
+		return (1);
+	s = "START READING:\n";
+	while (s)
+	{
+		printf("%s", s);
+		s = get_next_line(fd);
+	}
+	return (0);
+}
