@@ -6,7 +6,7 @@
 /*   By: damateos <damateos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/04 12:03:11 by damateos          #+#    #+#             */
-/*   Updated: 2024/02/04 12:14:52 by damateos         ###   ########.fr       */
+/*   Updated: 2024/02/04 15:24:35 by damateos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 # define GET_NEXT_LINE_H
 
 # include <stdlib.h>
-# include <fcntl.h>
+# include <unistd.h>
 
 char	*get_next_line(int fd);
+int		read_chunk(char *buff, size_t *len, size_t buff_size, int fd);
 
 #endif
