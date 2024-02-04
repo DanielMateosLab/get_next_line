@@ -1,0 +1,6 @@
+.vscode
+main.c
+a.*
+test*
+*.swp
+.editorconfig
