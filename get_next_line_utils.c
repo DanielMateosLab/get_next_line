@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: damateos <damateos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: default <default@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/04 13:06:14 by damateos          #+#    #+#             */
-/*   Updated: 2024/02/04 18:47:57 by damateos         ###   ########.fr       */
+/*   Updated: 2024/02/05 22:48:36 by default          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,12 @@ void	resize_buff(char **buff, size_t len, size_t new_size)
 	*buff = temp;
 }
 
-static int	get_newline_i(const char *s, int lim)
+int	get_newline_i(const char *s)
 {
 	int	i;
 
 	i = 0;
-	while (i < lim)
+	while (s[i])
 	{
 		if (s[i] == '\n')
 			return (i);
@@ -62,7 +62,7 @@ static int	check_success(char *buff, int res)
  * read_chunk:
  * increases buffer by buffer size and fills it reading from fd
  * if memory allocation or read fails, returns -1
- * if found new_line or eof returns 1 
+ * if found new_line or eof returns 1
  * otherwise, returns 0,
  */
 int	read_chunk(char **buff, size_t len, size_t buff_size, int fd)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: damateos <damateos@student.42.fr>          +#+  +:+       +#+        */
+/*   By: default <default@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/04 12:03:11 by damateos          #+#    #+#             */
-/*   Updated: 2024/02/04 18:09:36 by damateos         ###   ########.fr       */
+/*   Updated: 2024/02/05 22:48:47 by default          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,5 +18,6 @@
 
 char	*get_next_line(int fd);
 int		read_chunk(char **buff, size_t len, size_t buff_size, int fd);
+int		get_newline_i(const char *s);
 
 #endif
