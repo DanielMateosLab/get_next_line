@@ -13,8 +13,9 @@
 #include "get_next_line.h"
 
 /* Resizes the buffer to the new_size or initializes it if NULL.
+ * New size is the length of the string
  * Null-terminates the buffer string */
-void	resize_buff(char **buff, size_t len, size_t new_size)
+void	resize_buff(char **buff, size_t new_size)
 {
 	char	*temp;
 	size_t	i;
@@ -26,7 +27,7 @@ void	resize_buff(char **buff, size_t len, size_t new_size)
 		*buff = NULL;
 	}
 	i = 0;
-	while (*buff && i < len && i < new_size)
+	while (*buff && (*buff)[i] && i < new_size)
 	{
 		temp[i] = (*buff)[i];
 		i++;
@@ -51,12 +52,12 @@ int	get_newline_i(const char *s)
 	return (-1);
 }
 
-static int	check_success(char *buff, int res)
-{
-	if (!buff)
-		return (-1);
-	return (res);
-}
+// static int	check_success(char *buff, int res)
+// {
+// 	if (!buff)
+// 		return (-1);
+// 	return (res);
+// }
 
 /*
  * read_chunk:
@@ -65,31 +66,31 @@ static int	check_success(char *buff, int res)
  * if found new_line or eof returns 1
  * otherwise, returns 0,
  */
-int	read_chunk(char **buff, size_t len, size_t buff_size, int fd)
-{
-	int	read_b;
-	int	newline_i;
+// int	read_chunk(char **buff, size_t len, size_t buff_size, int fd)
+// {
+// 	int	read_b;
+// 	int	newline_i;
 
-	resize_buff(buff, len, len + buff_size);
-	if (!*buff)
-		return (-1);
-	read_b = read(fd, *buff + len, buff_size);
-	if (read_b == -1)
-	{
-		free(*buff);
-		*buff = NULL;
-		return (-1);
-	}
-	newline_i = get_newline_i(*buff + len, len);
-	if (newline_i != -1)
-	{
-		resize_buff(buff, len + buff_size, len + newline_i + 1);
-		return (check_success(*buff, 1));
-	}
-	if ((size_t)read_b < buff_size)
-	{
-		resize_buff(buff, len + buff_size, len + read_b);
-		return (check_success(*buff, 1));
-	}
-	return (0);
-}
+// 	resize_buff(buff, len, len + buff_size);
+// 	if (!*buff)
+// 		return (-1);
+// 	read_b = read(fd, *buff + len, buff_size);
+// 	if (read_b == -1)
+// 	{
+// 		free(*buff);
+// 		*buff = NULL;
+// 		return (-1);
+// 	}
+// 	newline_i = get_newline_i(*buff + len, len);
+// 	if (newline_i != -1)
+// 	{
+// 		resize_buff(buff, len + buff_size, len + newline_i + 1);
+// 		return (check_success(*buff, 1));
+// 	}
+// 	if ((size_t)read_b < buff_size)
+// 	{
+// 		resize_buff(buff, len + buff_size, len + read_b);
+// 		return (check_success(*buff, 1));
+// 	}
+// 	return (0);
+// }

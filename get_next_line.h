@@ -19,5 +19,6 @@
 char	*get_next_line(int fd);
 int		read_chunk(char **buff, size_t len, size_t buff_size, int fd);
 int		get_newline_i(const char *s);
+void	resize_buff(char **buff, size_t new_size);
 
 #endif

@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -D BUFFER_SIZE=8
+CFLAGS = -Wall -Wextra -Werror -D BUFFER_SIZE=10
 
 NAME = test
 
