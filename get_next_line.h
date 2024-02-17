@@ -16,9 +16,16 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 4094
+# endif
+
 char	*get_next_line(int fd);
-int		read_chunk(char **buff, size_t len, size_t buff_size, int fd);
+void	*ft_memcpy(void *dst, const void *src, size_t n);
 int		get_newline_i(const char *s);
-void	resize_buff(char **buff, size_t new_size);
+void	resize_line(char **buff, size_t new_size);
+size_t	ft_strlen(char const *s);
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
+void	read_until_nl_eof(char **line, int fd);
 
 #endif

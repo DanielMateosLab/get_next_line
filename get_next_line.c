@@ -14,46 +14,7 @@
  * This optimizes memory usage and caching by the system.
  * We can see the system page size executing `sysctl vm.pagesize` */
 
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE 4094
-#endif
-
 #include "get_next_line.h"
-
-void	*ft_memcpy(void *dst, const void *src, size_t n)
-{
-	unsigned char	*dst_u;
-	unsigned char	*src_u;
-
-	if (!dst && !src)
-		return (dst);
-	dst_u = (unsigned char *)dst;
-	src_u = (unsigned char *)src;
-	while (n-- > 0)
-		dst_u[n] = src_u[n];
-	return (dst);
-}
-
-void	*ft_memmove(void *dst, const void *src, size_t len)
-{
-	unsigned char	*dst_u;
-	unsigned char	*src_u;
-	size_t			i;
-
-	if ((!dst && !src) || !len || dst == src)
-		return (dst);
-	if (dst > src)
-		return (ft_memcpy(dst, src, len));
-	dst_u = (unsigned char *)dst;
-	src_u = (unsigned char *)src;
-	i = 0;
-	while (i < len)
-	{
-		dst_u[i] = src_u[i];
-		i++;
-	}
-	return (dst);
-}
 
 size_t	ft_strlen(char const *s)
 {
@@ -65,115 +26,73 @@ size_t	ft_strlen(char const *s)
 	return (size);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+void	buff_to_line(char **line, char *buff)
 {
-	size_t	src_len;
-
-	src_len = ft_strlen(src);
-	if (dstsize >= src_len + 1)
-		ft_memmove(dst, src, src_len + 1);
-	else if (dstsize != 0)
+	if (ft_strlen(buff) == 0)
 	{
-		ft_memmove(dst, src, dstsize - 1);
-		dst[dstsize - 1] = '\0';
+		resize_line(line, 0);
+		return ;
 	}
-	return (src_len);
+	resize_line(line, BUFFER_SIZE + 1);
+	if (*line)
+		ft_memcpy(*line, buff, ft_strlen(buff));
 }
 
-size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
+void	read_until_nl_eof(char **line, int fd)
 {
-	size_t	src_len;
-	size_t	dst_len;
+	int		nl_index;
+	int		bytes_read;
+	size_t	len;
 
-	src_len = ft_strlen(src);
-	dst_len = 0;
-	while (dst[dst_len] && dst_len < dstsize)
-		dst_len++;
-	if (dst_len >= dstsize)
-		return (dstsize + src_len);
-	if (dstsize > dst_len + src_len)
-		ft_memcpy(dst + dst_len, src, src_len + 1);
-	else
+	nl_index = -1;
+	while (nl_index == -1 && bytes_read != 0)
 	{
-		ft_memcpy(dst + dst_len, src, dstsize - dst_len - 1);
-		dst[dstsize - 1] = '\0';
+		resize_line(line, (len = ft_strlen(*line)) + BUFFER_SIZE + 1);
+		if (!*line)
+			return ;
+		bytes_read = read(fd, *line + len, BUFFER_SIZE);
+		if (bytes_read == -1)
+		{
+			if (line)
+			{
+				free(*line);
+				*line = NULL;
+			}
+			return ;
+		}
+		(*line)[len + bytes_read] = '\0';
+		nl_index = get_newline_i(*line);
 	}
-	return (src_len + dst_len);
 }
 
-// dest_len does not include the '\0'
-char	*ft_substr(char const *s, unsigned int start, size_t dest_len)
+char	*save_suffix_and_return_line(char *line, char *buff)
 {
-	char	*sub;
-	size_t	source_len;
+	int	line_end_i;
 
-	if (s == NULL)
-		return (NULL);
-	source_len = ft_strlen(s);
-	if (start > source_len)
-		dest_len = 0;
-	else if (dest_len > source_len - start)
-		dest_len = source_len - start;
-	sub = malloc((dest_len + 1) * sizeof(char));
-	if (sub == NULL)
-		return (NULL);
-	if (start > source_len)
-		sub[0] = '\0';
-	else
-		ft_strlcpy(sub, s + start, dest_len + 1);
-	return (sub);
+	line_end_i = get_newline_i(line);
+	if (line_end_i == -1)
+	{
+		buff[0] = '\0';
+		return (line);
+	}
+	ft_strlcpy(buff, line + line_end_i + 1, ft_strlen(line) - line_end_i);
+	line[line_end_i + 1] = '\0';
+	return (line);
 }
 
 char	*get_next_line(int fd)
 {
 	static char	buff[BUFFER_SIZE + 1] = {'\0'};
 	char		*line;
-	ssize_t		bytes_read;
-	int			newline_i;
-	int		curr_len;
 
 	if (BUFFER_SIZE <= 0)
 		return (NULL);
 	line = NULL;
-	while (1)
-	{
-		curr_len = ft_strlen(line);
-		if (!buff[0])
-		{
-			bytes_read = read(fd, buff, BUFFER_SIZE);
-			if (bytes_read == -1)
-			{
-				if (line)
-					free(line);
-				return (NULL);
-			}
-			if (!bytes_read)
-			{
-				if (!curr_len)
-					return (NULL);
-				return (line);
-			}
-			buff[bytes_read] = '\0';
-		}
-		newline_i = get_newline_i(buff);
-		if (newline_i != -1)
-		{
-			resize_buff(&line, curr_len + newline_i + 1);
-			if (!line)
-				return (NULL);
-			ft_strlcpy(line + curr_len, buff, newline_i + 2);
-			ft_strlcpy(buff, buff + newline_i + 1, bytes_read - newline_i + 1);
-			return (line);
-		}
-		resize_buff(&line, curr_len + bytes_read);
-		if (!line)
-			return (NULL);
-		ft_strlcpy(line + curr_len, buff, bytes_read + 1);
-		buff[0] = '\0';
-		/*
-		   Remember berni's approach. You may use strjoin and just put a \0 after the newline found
-		   High level: read chunks until finding a new line.
-		   Store remaining chunk in buffer.
-		*/
-	}
+	buff_to_line(&line, buff);
+	if (!line)
+		return (NULL);
+	read_until_nl_eof(&line, fd);
+	if (!line)
+		return (NULL);
+	return (save_suffix_and_return_line(line, buff));
 }

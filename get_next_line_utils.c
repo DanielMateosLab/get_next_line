@@ -15,27 +15,27 @@
 /* Resizes the buffer to the new_size or initializes it if NULL.
  * New size is the length of the string
  * Null-terminates the buffer string */
-void	resize_buff(char **buff, size_t new_size)
+void	resize_line(char **line, size_t new_size)
 {
 	char	*temp;
 	size_t	i;
 
 	temp = malloc(new_size + 1);
-	if (!temp)
+	if (!temp && *line)
 	{
-		free(*buff);
-		*buff = NULL;
+		free(*line);
+		*line = NULL;
 	}
 	i = 0;
-	while (*buff && (*buff)[i] && i < new_size)
+	while (*line && (*line)[i] && i < new_size)
 	{
-		temp[i] = (*buff)[i];
+		temp[i] = (*line)[i];
 		i++;
 	}
 	temp[new_size] = '\0';
-	if (*buff)
-		free(*buff);
-	*buff = temp;
+	if (*line)
+		free(*line);
+	*line = temp;
 }
 
 int	get_newline_i(const char *s)
@@ -43,7 +43,7 @@ int	get_newline_i(const char *s)
 	int	i;
 
 	i = 0;
-	while (s[i])
+	while (s && s[i])
 	{
 		if (s[i] == '\n')
 			return (i);
@@ -52,45 +52,52 @@ int	get_newline_i(const char *s)
 	return (-1);
 }
 
-// static int	check_success(char *buff, int res)
-// {
-// 	if (!buff)
-// 		return (-1);
-// 	return (res);
-// }
+void	*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	unsigned char	*dst_u;
+	unsigned char	*src_u;
 
-/*
- * read_chunk:
- * increases buffer by buffer size and fills it reading from fd
- * if memory allocation or read fails, returns -1
- * if found new_line or eof returns 1
- * otherwise, returns 0,
- */
-// int	read_chunk(char **buff, size_t len, size_t buff_size, int fd)
-// {
-// 	int	read_b;
-// 	int	newline_i;
+	if (!dst && !src)
+		return (dst);
+	dst_u = (unsigned char *)dst;
+	src_u = (unsigned char *)src;
+	while (n-- > 0)
+		dst_u[n] = src_u[n];
+	return (dst);
+}
 
-// 	resize_buff(buff, len, len + buff_size);
-// 	if (!*buff)
-// 		return (-1);
-// 	read_b = read(fd, *buff + len, buff_size);
-// 	if (read_b == -1)
-// 	{
-// 		free(*buff);
-// 		*buff = NULL;
-// 		return (-1);
-// 	}
-// 	newline_i = get_newline_i(*buff + len, len);
-// 	if (newline_i != -1)
-// 	{
-// 		resize_buff(buff, len + buff_size, len + newline_i + 1);
-// 		return (check_success(*buff, 1));
-// 	}
-// 	if ((size_t)read_b < buff_size)
-// 	{
-// 		resize_buff(buff, len + buff_size, len + read_b);
-// 		return (check_success(*buff, 1));
-// 	}
-// 	return (0);
-// }
+void	*ft_memmove(void *dst, const void *src, size_t len)
+{
+	unsigned char	*dst_u;
+	unsigned char	*src_u;
+	size_t			i;
+
+	if ((!dst && !src) || !len || dst == src)
+		return (dst);
+	if (dst > src)
+		return (ft_memcpy(dst, src, len));
+	dst_u = (unsigned char *)dst;
+	src_u = (unsigned char *)src;
+	i = 0;
+	while (i < len)
+	{
+		dst_u[i] = src_u[i];
+		i++;
+	}
+	return (dst);
+}
+
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+{
+	size_t	src_len;
+
+	src_len = ft_strlen(src);
+	if (dstsize >= src_len + 1)
+		ft_memmove(dst, src, src_len + 1);
+	else if (dstsize != 0)
+	{
+		ft_memmove(dst, src, dstsize - 1);
+		dst[dstsize - 1] = '\0';
+	}
+	return (src_len);
+}
