@@ -48,7 +48,7 @@ void	read_until_nl_eof(char **line, int fd)
 	bytes_read = 1;
 	while (nl_index == -1 && bytes_read != 0)
 	{
-		resize_line(line, (len = ft_strlen(*line)) + BUFFER_SIZE + 1);
+		resize_line(line, (len = ft_strlen(*line)) + BUFFER_SIZE);
 		if (!*line)
 			return ;
 		bytes_read = read(fd, *line + len, BUFFER_SIZE);
@@ -74,6 +74,7 @@ char	*save_suffix_and_return_line(char *line, char *buff)
 	if (line_end_i == -1)
 	{
 		buff[0] = '\0';
+		resize_line(&line, ft_strlen(line));
 		return (line);
 	}
 	ft_strlcpy(buff, line + line_end_i + 1, ft_strlen(line) - line_end_i);
