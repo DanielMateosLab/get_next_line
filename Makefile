@@ -22,9 +22,9 @@ bonus: $(BONUS_OBJS)
 	$(CC) $(CFLAGS) -g3 $(BONUS_SRCS) main.c -o gnl_bonus
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(BONUS_OBJS)
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) gnl_bonus
 
 re: fclean all
