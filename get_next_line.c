@@ -78,6 +78,7 @@ char	*save_suffix_and_return_line(char *line, char *buff)
 	}
 	ft_strlcpy(buff, line + line_end_i + 1, ft_strlen(line) - line_end_i);
 	line[line_end_i + 1] = '\0';
+	resize_line(&line, line_end_i + 1);
 	return (line);
 }
 
