@@ -33,7 +33,7 @@ void	buff_to_line(char **line, char *buff)
 		resize_line(line, 0);
 		return ;
 	}
-	resize_line(line, BUFFER_SIZE + 1);
+	resize_line(line, ft_strlen(buff));
 	if (*line)
 		ft_memcpy(*line, buff, ft_strlen(buff));
 }
@@ -45,13 +45,14 @@ void	read_until_nl_eof(char **line, int fd)
 	size_t	len;
 
 	nl_index = -1;
+	bytes_read = 1;
 	while (nl_index == -1 && bytes_read != 0)
 	{
 		resize_line(line, (len = ft_strlen(*line)) + BUFFER_SIZE + 1);
 		if (!*line)
 			return ;
 		bytes_read = read(fd, *line + len, BUFFER_SIZE);
-		if (bytes_read == -1)
+		if (bytes_read == -1 || (!bytes_read && !len))
 		{
 			if (line)
 			{
@@ -85,7 +86,7 @@ char	*get_next_line(int fd)
 	static char	buff[BUFFER_SIZE + 1] = {'\0'};
 	char		*line;
 
-	if (BUFFER_SIZE <= 0)
+	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
 	line = NULL;
 	buff_to_line(&line, buff);
@@ -93,6 +94,9 @@ char	*get_next_line(int fd)
 		return (NULL);
 	read_until_nl_eof(&line, fd);
 	if (!line)
+	{
+		buff[0] = '\0';
 		return (NULL);
+	}
 	return (save_suffix_and_return_line(line, buff));
 }
