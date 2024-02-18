@@ -44,7 +44,7 @@ void	read_until_nl_eof(char **line, int fd)
 	int		bytes_read;
 	size_t	len;
 
-	nl_index = -1;
+	nl_index = get_newline_i(*line);
 	bytes_read = 1;
 	while (nl_index == -1 && bytes_read != 0)
 	{
