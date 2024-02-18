@@ -54,7 +54,7 @@ void	read_until_nl_eof(char **line, int fd)
 		bytes_read = read(fd, *line + len, BUFFER_SIZE);
 		if (bytes_read == -1 || (!bytes_read && !len))
 		{
-			if (line)
+			if (*line)
 			{
 				free(*line);
 				*line = NULL;
