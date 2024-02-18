@@ -1,18 +1,25 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -D BUFFER_SIZE=10
 
-NAME = test
+NAME = gnl
+BONUS_NAME = gnl_bonus
 
-SRCS = $(wildcard *.c)
+SRCS = $(filter-out %_bonus.c, $(wildcard *.c))
 OBJS = $(SRCS:.c=.o)
+
+BONUS_SRCS = $(wildcard *_bonus.c)
+BONUS_OBJS = $(BONUS_SRCS:.c=.o)
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -g3 -fsanitize=address $(SRCS) -o test
+	$(CC) $(CFLAGS) -g3 -fsanitize=address $(SRCS) -o $(NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+bonus: $(BONUS_OBJS)
+	$(CC) $(CFLAGS) -g3 $(BONUS_SRCS) main.c -o gnl_bonus
 
 clean:
 	rm -f $(OBJS)
